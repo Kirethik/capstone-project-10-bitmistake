@@ -1,0 +1,18 @@
+
+# Bytecode files
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE/Editor files
+.idea/
+.vscode/
+*.swp
+*~
+
+# Log files
+*.log
+
+# Sensitive information (example)
+config.ini
+.env

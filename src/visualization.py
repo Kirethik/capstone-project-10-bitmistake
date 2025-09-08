@@ -8,15 +8,18 @@ class SimulationVisualizer:
     def __init__(self):
         self.colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown']
     
-    def plot_environment(self, digital_twin, placement, save_path="environment_plot.png"):
+    def plot_environment(self, digital_twin, placement, algorithm_name="OLB", save_path=None):
         """Plot the digital twin environment with assignments"""
+        if save_path is None:
+            save_path = f"environment_{algorithm_name.lower()}.png"
+            
         plt.figure(figsize=(12, 8))
         
         # Plot fog nodes
         for i, fog_node in enumerate(digital_twin.fog_nodes):
             plt.scatter(fog_node.coordinates[0], fog_node.coordinates[1], 
                        c=self.colors[i % len(self.colors)], s=200, marker='s', 
-                       label=f'Fog Node {i}', alpha=0.7)
+                       label=f'Fog Node {i}', alpha=0.7, edgecolors='black')
         
         # Plot sensors with assignment colors
         for node_id, sensors in placement.module_assignments.items():
@@ -29,31 +32,41 @@ class SimulationVisualizer:
                         [sensor.coordinates[1], fog_node.coordinates[1]], 
                         c=self.colors[node_id % len(self.colors)], alpha=0.3, linewidth=1)
         
-        plt.xlabel('X Coordinate')
-        plt.ylabel('Y Coordinate')
-        plt.title('OLB Digital Twin Environment - Sensor-Fog Node Assignments')
+        plt.xlabel('X Coordinate (units)')
+        plt.ylabel('Y Coordinate (units)')
+        plt.title(f'{algorithm_name} Algorithm - Sensor-Fog Node Assignments')
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.grid(True, alpha=0.3)
         plt.tight_layout()
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        plt.show()
+        print(f"Environment plot saved: {save_path}")
+        return save_path
     
     def plot_performance_comparison(self, results_dict, save_path="performance_comparison.png"):
         """Compare performance metrics across algorithms"""
         algorithms = list(results_dict.keys())
-        metrics = ['overall_latency', 'energy_consumption', 'network_usage']
+        metrics = ['overall_latency', 'energy_consumption', 'load_balance_score']
+        metric_labels = ['Overall Latency (ms)', 'Energy Consumption (W)', 'Load Balance Score']
         
         fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+        colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
         
-        for i, metric in enumerate(metrics):
+        for i, (metric, label) in enumerate(zip(metrics, metric_labels)):
             values = [results_dict[alg][metric] for alg in algorithms]
-            axes[i].bar(algorithms, values, color=['blue', 'red', 'green'])
-            axes[i].set_title(f'{metric.replace("_", " ").title()}')
+            bars = axes[i].bar(algorithms, values, color=colors[:len(algorithms)])
+            axes[i].set_title(label)
             axes[i].set_ylabel('Value')
+            axes[i].tick_params(axis='x', rotation=45)
+            
+            # Add value labels on bars
+            for bar, value in zip(bars, values):
+                axes[i].text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(values)*0.01,
+                           f'{value:.3f}', ha='center', va='bottom', fontsize=9)
         
         plt.tight_layout()
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        plt.show()
+        print(f"Performance comparison saved: {save_path}")
+        return save_path
     
     def plot_latency_distribution(self, metrics, save_path="latency_distribution.png"):
         """Plot latency distribution across sensors"""

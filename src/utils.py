@@ -32,7 +32,7 @@ def save_results(metrics, placement, output_file):
                 for sensor in sensors:
                     f.write(f"  - Sensor {sensor.device_id} at coordinates {sensor.coordinates}\n")
         
-        print(f"✓ Results saved to {output_file}")
+        print(f"Results saved to {output_file}")
         return True
         
     except Exception as e:

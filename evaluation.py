@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
 from src.environment import DigitalTwinEnvironment
 from src.olb_algorithm import OLBPlacement
-from src.comparison_algorithms import RandomPlacement, DistancePlacement
+from src.comparison_algorithms import RandomPlacement, DistancePlacement, LoadBalancedPlacement
 from src.yafs_integration import create_smart_healthcare_application, create_yafs_topology
 from src.metrics import PerformanceMetrics
 from src.utils import create_placement_json, SimulationConfig
@@ -21,7 +21,8 @@ def run_algorithm_comparison():
     algorithms = {
         'OLB': OLBPlacement,
         'Random': RandomPlacement,
-        'Distance': DistancePlacement
+        'Distance': DistancePlacement,
+        'LoadBalanced': LoadBalancedPlacement
     }
     
     results = {}
@@ -53,13 +54,13 @@ def run_algorithm_comparison():
             
             # Collect metrics
             metrics = PerformanceMetrics()
-            metrics.collect_metrics(environment, placement)
+            metrics.collect_metrics(environment, placement, alg_name)
             
             results[alg_name] = metrics.get_summary_dict()
-            print(f"✓ {alg_name} completed\n")
+            print(f"{alg_name} completed\n")
             
         except Exception as e:
-            print(f"✗ {alg_name} failed: {e}\n")
+            print(f"{alg_name} failed: {e}\n")
             continue
     
     # Generate comparison report
