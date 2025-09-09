@@ -18,8 +18,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('logs/olb_simulation.log'),
-        logging.StreamHandler()
+        logging.FileHandler('logs/olb_simulation.log')
     ]
 )
 logger = logging.getLogger(__name__)
@@ -124,23 +123,14 @@ def main():
         logger.info("Simulation completed successfully!")
         
         # Print summary
-        print("\n" + "="*60)
-        print("OLB SIMULATION SUMMARY")
-        print("="*60)
-        print(f"Simulation Time: {simulation_time} time units")
-        print(f"Sensors: {len(environment.sensors)}")
-        print(f"Fog Nodes: {len(environment.fog_nodes)}")
-        print(f"Framework: YAFS 1.0")
-        print(f"Algorithm: Optimised Load Balancing (OLB)")
-        print("\nPerformance Metrics:")
-        if 'average_latency' in report:
-            print(f"  Average Latency: {report['average_latency']:.3f} ms")
-        if 'average_energy' in report:
-            print(f"  Average Energy: {report['average_energy']:.3f} J")
-        if 'total_placements' in report:
-            print(f"  Total Placements: {report['total_placements']}")
-        print(f"Results saved to: data/olb_simulation_results.json")
-        print("="*60)
+        # Log summary instead of printing
+        logger.info("OLB SIMULATION SUMMARY")
+        logger.info(f"Simulation Time: {simulation_time} time units")
+        logger.info(f"Sensors: {len(environment.sensors)}")
+        logger.info(f"Fog Nodes: {len(environment.fog_nodes)}")
+        logger.info(f"Framework: YAFS 1.0")
+        logger.info(f"Algorithm: Optimised Load Balancing (OLB)")
+        logger.info(f"Results saved to: data/olb_simulation_results.json")
         
     except ImportError as e:
         logger.error(f"YAFS framework not properly installed: {e}")

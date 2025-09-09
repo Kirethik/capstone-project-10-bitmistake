@@ -7,7 +7,7 @@ def create_smart_healthcare_application(digital_twin):
     Phase 2: Application Architecture Definition
     Creates the YAFS application with proper DAG structure
     """
-    print("Creating Smart Healthcare Application...")
+    # Creating application silently
     
     app = Application(name="SmartHealthcare")
     
@@ -103,7 +103,7 @@ def create_smart_healthcare_application(digital_twin):
         result_msg = f"result_msg_{sensor.device_id}"
         app.add_service_module("Storage_Module", result_msg, message_out=[])
     
-    print(f"Application created with {len(modules)} modules")
+    # Application created
     return app
 
 
@@ -112,7 +112,7 @@ def create_yafs_topology(digital_twin):
     Create YAFS topology from digital twin environment
     Task 1.4: Model Tier 3 - Cloud Layer Entities
     """
-    print("Creating YAFS topology...")
+    # Creating topology silently
     
     # Create NetworkX graph first
     G = nx.Graph()
@@ -168,5 +168,5 @@ def create_yafs_topology(digital_twin):
     topology.G.edges["proxy", "cloud"]["BW"] = 1000
     topology.G.edges["proxy", "cloud"]["PR"] = 100  # 100ms propagation delay
     
-    print(f"Topology created with {len(fog_node_names)} nodes")
+    # Topology created
     return topology

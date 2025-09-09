@@ -142,7 +142,7 @@ class OLBPlacement(Placement):
             if "Processing_Module" in module_name:
                 modules_to_place.append(module_name)
         
-        print(f"OLB: Placing {len(modules_to_place)} processing modules...")
+        # Placing modules silently
         
         # Apply OLB algorithm for each processing module
         for module_name in modules_to_place:
@@ -165,12 +165,12 @@ class OLBPlacement(Placement):
                         self.module_assignments[optimal_node_id] = []
                     self.module_assignments[optimal_node_id].append(sensor)
                     
-                    print(f"OLB: Deployed {module_name} (Sensor {sensor_id}) -> {node_name}")
+                    # Module deployed
                 else:
                     # Fallback to first fog node if OLB fails
                     fallback_node = "fog_0"
                     sim.deploy_module(app_name, module_name, [], [fallback_node])
-                    print(f"OLB: Fallback deployment {module_name} -> {fallback_node}")
+                    # Fallback deployment
     
     def _extract_sensor_id(self, module_name):
         """Extract sensor ID from module name"""
@@ -196,7 +196,7 @@ class OLBPlacement(Placement):
         min_latency = float('inf')
         optimal_node_id = None
         
-        print(f"  OLB: Evaluating fog nodes for Sensor {sensor.device_id}...")
+        # Evaluating fog nodes
         
         # Iterate through all candidate Tier 2 Fog Nodes
         for i, fog_node in enumerate(self.digital_twin.fog_nodes):
@@ -213,15 +213,15 @@ class OLBPlacement(Placement):
                 # Final score calculation
                 total_latency = comm_latency + comp_latency
                 
-                print(f"    Fog Node {i}: Comm={comm_latency:.4f}, Comp={comp_latency:.4f}, Total={total_latency:.4f}")
+                # Fog node evaluation
                 
                 if total_latency < min_latency:
                     min_latency = total_latency
                     optimal_node_id = i
                     
             except (ZeroDivisionError, ValueError, OverflowError) as e:
-                print(f"    Warning: Error calculating latency for fog node {i}: {e}")
+                # Warning: calculation error
                 continue
         
-        print(f"  OLB: Selected Fog Node {optimal_node_id} with latency {min_latency:.4f}")
+        # Selected optimal node
         return optimal_node_id

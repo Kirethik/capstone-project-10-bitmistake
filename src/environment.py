@@ -37,7 +37,7 @@ class DigitalTwinEnvironment:
         if seed is not None:
             random.seed(seed)
             
-        print(f"Initializing {num_sensors} IoT sensors...")
+        # Initializing sensors silently
         for i in range(num_sensors):
             coordinates = (random.uniform(0, self.width), random.uniform(0, self.height))
             transmission_power = random.uniform(0.1, 1.0)  # Watts
@@ -63,7 +63,7 @@ class DigitalTwinEnvironment:
         if seed is not None:
             random.seed(seed + 100)  # Different seed offset for fog nodes
             
-        print(f"Initializing {num_fog_nodes} fog nodes...")
+        # Initializing fog nodes silently
         for i in range(num_fog_nodes):
             coordinates = (random.uniform(500, 2500), random.uniform(500, 1500))
             processing_power = random.uniform(1000, 5000)  # MIPS
