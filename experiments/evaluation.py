@@ -3,7 +3,7 @@ import os
 import json
 from datetime import datetime
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from src.environment import DigitalTwinEnvironment
 from src.olb_algorithm import OLBPlacement
@@ -40,14 +40,14 @@ def run_algorithm_comparison():
         topology = create_yafs_topology(environment)
         
         # Initialize algorithm
-        placement_json = create_placement_json()
+        placement_json = create_placement_json('../config')
         placement = alg_class(f"{alg_name}_Healthcare", placement_json, environment)
         
         try:
             from yafs.core import Sim
             from yafs.population import Population
             
-            s = Sim(topology, default_results_path="results/")
+            s = Sim(topology, default_results_path="../results/")
             population = Population(name=f"{alg_name}Sensors")
             s.deploy_app(app, placement, population)
             s.run(until=config.simulation_time)
@@ -67,11 +67,11 @@ def run_algorithm_comparison():
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
     # Save detailed results
-    with open(f"algorithm_comparison_{timestamp}.json", 'w') as f:
+    with open(f"../data/algorithm_comparison_{timestamp}.json", 'w') as f:
         json.dump(results, f, indent=2, default=str)
     
     # Generate comparison report
-    with open(f"comparison_report_{timestamp}.txt", 'w') as f:
+    with open(f"../reports/comparison_report_{timestamp}.txt", 'w') as f:
         f.write("=== ALGORITHM COMPARISON REPORT ===\n\n")
         
         for alg_name, metrics in results.items():
@@ -90,11 +90,11 @@ def run_algorithm_comparison():
     # Create visualizations
     visualizer = SimulationVisualizer()
     if results:
-        visualizer.plot_performance_comparison(results, f"performance_comparison_{timestamp}.png")
+        visualizer.plot_performance_comparison(results, f"../plots/performance_comparison_{timestamp}.png")
     
     print(f"Evaluation completed! Results saved with timestamp: {timestamp}")
     return results
 
 if __name__ == "__main__":
-    os.makedirs("results", exist_ok=True)
+    os.makedirs("../results", exist_ok=True)
     run_algorithm_comparison()

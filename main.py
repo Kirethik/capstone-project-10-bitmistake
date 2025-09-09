@@ -18,7 +18,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('olb_simulation.log'),
+        logging.FileHandler('logs/olb_simulation.log'),
         logging.StreamHandler()
     ]
 )
@@ -54,7 +54,7 @@ def main():
     
     # Create placement JSON for YAFS
     logger.info("Creating placement configuration...")
-    placement_json = create_placement_json()
+    placement_json = create_placement_json('config')
     
     # Initialize OLB placement algorithm
     logger.info("Initializing OLB placement algorithm...")
@@ -97,7 +97,6 @@ def main():
         report = metrics.generate_report()
         
         # Save results
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         results = {
             'simulation_config': config.to_dict(),
             'environment_info': {
@@ -108,7 +107,6 @@ def main():
             },
             'performance_metrics': report,
             'simulation_metadata': {
-                'timestamp': timestamp,
                 'simulation_time': simulation_time,
                 'framework': 'YAFS 1.0',
                 'algorithm': 'Optimised Load Balancing (OLB)'
@@ -116,15 +114,14 @@ def main():
         }
         
         # Save results to JSON file
-        results_filename = f"olb_simulation_results_{timestamp}.json"
+        results_filename = f"data/olb_simulation_results.json"
         with open(results_filename, 'w') as f:
             json.dump(results, f, indent=2, default=str)
         
         # Also save text report
-        save_results(metrics, olb_placement, f"olb_simulation_report_{timestamp}.txt")
+        save_results(metrics, olb_placement, f"reports/olb_simulation_report.txt")
         
         logger.info("Simulation completed successfully!")
-        logger.info(f"Results saved with timestamp: {timestamp}")
         
         # Print summary
         print("\n" + "="*60)
@@ -142,7 +139,7 @@ def main():
             print(f"  Average Energy: {report['average_energy']:.3f} J")
         if 'total_placements' in report:
             print(f"  Total Placements: {report['total_placements']}")
-        print(f"Results saved to: olb_simulation_results_{timestamp}.json")
+        print(f"Results saved to: data/olb_simulation_results.json")
         print("="*60)
         
     except ImportError as e:
@@ -157,8 +154,11 @@ def main():
 
 
 if __name__ == "__main__":
-    # Create results directory if it doesn't exist
+    # Create directories if they don't exist
     os.makedirs("results", exist_ok=True)
+    os.makedirs("data", exist_ok=True)
+    os.makedirs("reports", exist_ok=True)
+    os.makedirs("logs", exist_ok=True)
     
     # Run main simulation
     main()
