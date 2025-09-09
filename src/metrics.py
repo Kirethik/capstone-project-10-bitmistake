@@ -20,11 +20,6 @@ class PerformanceMetrics:
         self.algorithm_name = "Unknown"
         
     def collect_metrics(self, digital_twin, placement, algorithm_name="Unknown"):
-        """
-        Collect comprehensive performance metrics from simulation
-        """
-        print(f"Collecting performance metrics for {algorithm_name}...")
-        
         self.algorithm_name = algorithm_name
         calculator = OLBLatencyCalculator()
         
@@ -33,8 +28,10 @@ class PerformanceMetrics:
         total_energy = 0
         node_utilizations = []
         
-        # Calculate metrics for each assignment
         for node_id, assigned_sensors in placement.module_assignments.items():
+            if node_id >= len(digital_twin.fog_nodes):
+                continue
+                
             fog_node = digital_twin.fog_nodes[node_id]
             node_load = len(assigned_sensors)
             node_utilizations.append(node_load)
@@ -44,7 +41,10 @@ class PerformanceMetrics:
                 comm_lat = calculator.calculate_communication_latency(sensor, fog_node, other_sensors)
                 comp_lat = calculator.calculate_computing_latency(sensor, fog_node, other_sensors)
                 
-                # Calculate distance for energy computation
+                if comm_lat == float('inf') or comp_lat == float('inf'):
+                    comm_lat = 1000
+                    comp_lat = 1000
+                
                 distance = calculator.calculate_distance(sensor.coordinates, fog_node.coordinates)
                 energy = MetricsDefinitions.calculate_energy_consumption(sensor, fog_node, distance)
                 
@@ -64,22 +64,18 @@ class PerformanceMetrics:
                     'fog_node_coordinates': fog_node.coordinates
                 })
         
-        # Primary metrics
         self.overall_latency = total_comm_latency + total_comp_latency
         self.communication_latency = total_comm_latency
         self.computing_latency = total_comp_latency
         self.energy_consumption = total_energy
         
-        # Secondary metrics
         self.network_usage = sum(sensor.averageFlowRate * sensor.flowTrafficSize 
                                for sensor in digital_twin.sensors)
         self.execution_time = self.overall_latency / len(digital_twin.sensors) if digital_twin.sensors else 0
         
-        # Load balance metrics
         self.load_balance_score = MetricsDefinitions.calculate_load_balance_score(placement.module_assignments)
         self.max_utilization = max(node_utilizations) if node_utilizations else 0
         
-        # Cost metric
         self.cost_of_execution = (self.overall_latency * 0.1 + 
                                 self.network_usage * 0.05 + 
                                 self.energy_consumption * 0.02)

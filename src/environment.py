@@ -56,20 +56,17 @@ class DigitalTwinEnvironment:
             self.add_sensor(sensor)
 
     def initialize_fog_nodes(self, num_fog_nodes=6, seed=None):
-        """
-        Task 1.3: Model Tier 2 - Fog Layer Entities
-        Initialize fog nodes with random parameters
-        """
         if seed is not None:
-            random.seed(seed + 100)  # Different seed offset for fog nodes
+            random.seed(seed + 100)
             
-        # Initializing fog nodes silently
         for i in range(num_fog_nodes):
-            coordinates = (random.uniform(500, 2500), random.uniform(500, 1500))
-            processing_power = random.uniform(1000, 5000)  # MIPS
-            bandwidth = random.uniform(10, 100)            # MHz
-            carrier_frequency = random.uniform(2.4, 5.0)   # GHz
-            noise_power = random.uniform(1e-12, 1e-10)     # Watts
+            max_x = min(2500, self.width - 100)
+            max_y = min(1500, self.height - 100)
+            coordinates = (random.uniform(100, max_x), random.uniform(100, max_y))
+            processing_power = random.uniform(1000, 5000)
+            bandwidth = random.uniform(10, 100)
+            carrier_frequency = random.uniform(2.4, 5.0)
+            noise_power = random.uniform(1e-12, 1e-10)
             
             fog_node = FogNodeDevice(
                 node_id=i,

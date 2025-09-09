@@ -69,8 +69,11 @@ class SimulationVisualizer:
         return save_path
     
     def plot_latency_distribution(self, metrics, save_path="latency_distribution.png"):
-        """Plot latency distribution across sensors"""
         assignments = metrics.detailed_assignments
+        
+        if not assignments:
+            print("No assignments to plot")
+            return save_path
         
         comm_latencies = [a['comm_latency'] for a in assignments]
         comp_latencies = [a['comp_latency'] for a in assignments]
@@ -89,4 +92,6 @@ class SimulationVisualizer:
         plt.xticks(x, [f"S{a['sensor_id']}" for a in assignments])
         plt.tight_layout()
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        plt.show()
+        plt.close()
+        print(f"Latency distribution plot saved: {save_path}")
+        return save_path

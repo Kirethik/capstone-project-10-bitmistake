@@ -130,47 +130,30 @@ class OLBPlacement(Placement):
         self.activation_dist = None
         
     def initial_allocation(self, sim, app_name):
-        """
-        Initial allocation of modules to devices using OLB algorithm
-        This is the core YAFS method that gets called during simulation setup
-        """
         app = sim.apps[app_name]
         
-        # Get all modules that need placement (processing modules)
-        modules_to_place = []
-        for module_name in app.modules:
-            if "Processing_Module" in module_name:
-                modules_to_place.append(module_name)
+        modules_to_place = [m for m in app.modules if "Processing_Module" in m]
         
-        # Placing modules silently
-        
-        # Apply OLB algorithm for each processing module
         for module_name in modules_to_place:
-            # Extract sensor ID from module name
             sensor_id = self._extract_sensor_id(module_name)
             sensor = self._find_sensor_by_id(sensor_id)
             
             if sensor:
-                # Find optimal fog node using OLB algorithm
                 optimal_node_id = self._find_optimal_fog_node(sensor)
                 
                 if optimal_node_id is not None:
-                    # Deploy module to optimal node in YAFS
                     node_name = f"fog_{optimal_node_id}"
-                    # For processing modules, we deploy with empty services list
                     sim.deploy_module(app_name, module_name, [], [node_name])
                     
-                    # Track assignment in our digital twin
                     if optimal_node_id not in self.module_assignments:
                         self.module_assignments[optimal_node_id] = []
                     self.module_assignments[optimal_node_id].append(sensor)
-                    
-                    # Module deployed
                 else:
-                    # Fallback to first fog node if OLB fails
                     fallback_node = "fog_0"
                     sim.deploy_module(app_name, module_name, [], [fallback_node])
-                    # Fallback deployment
+                    if 0 not in self.module_assignments:
+                        self.module_assignments[0] = []
+                    self.module_assignments[0].append(sensor)
     
     def _extract_sensor_id(self, module_name):
         """Extract sensor ID from module name"""
@@ -189,39 +172,26 @@ class OLBPlacement(Placement):
         return None
     
     def _find_optimal_fog_node(self, sensor):
-        """
-        Core OLB Decision Logic
-        Finds optimal fog node by calculating total latency score
-        """
         min_latency = float('inf')
         optimal_node_id = None
         
-        # Evaluating fog nodes
-        
-        # Iterate through all candidate Tier 2 Fog Nodes
         for i, fog_node in enumerate(self.digital_twin.fog_nodes):
             try:
-                # Get currently assigned sensors to this node
                 assigned_sensors = self.module_assignments.get(i, [])
                 
-                # Calculate communication latency L_m(j)
                 comm_latency = self.calculator.calculate_communication_latency(sensor, fog_node, assigned_sensors)
-                
-                # Calculate computing latency L_p(j)
                 comp_latency = self.calculator.calculate_computing_latency(sensor, fog_node, assigned_sensors)
                 
-                # Final score calculation
-                total_latency = comm_latency + comp_latency
+                if comm_latency == float('inf') or comp_latency == float('inf'):
+                    continue
                 
-                # Fog node evaluation
+                total_latency = comm_latency + comp_latency
                 
                 if total_latency < min_latency:
                     min_latency = total_latency
                     optimal_node_id = i
                     
-            except (ZeroDivisionError, ValueError, OverflowError) as e:
-                # Warning: calculation error
+            except (ZeroDivisionError, ValueError, OverflowError):
                 continue
         
-        # Selected optimal node
         return optimal_node_id

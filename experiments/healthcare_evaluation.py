@@ -8,14 +8,11 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from src.environment import DigitalTwinEnvironment
-from src.healthcare_scenarios import HealthcareScenarios
-from src.olb_algorithm import OLBPlacement
-from src.comparison_algorithms import RandomPlacement, DistancePlacement
-from src.yafs_integration import create_smart_healthcare_application, create_yafs_topology
-from src.metrics import PerformanceMetrics
-from src.utils import create_placement_json
-from src.visualization import SimulationVisualizer
+from src import (
+    DigitalTwinEnvironment, HealthcareScenarios, OLBPlacement, RandomPlacement,
+    DistancePlacement, create_smart_healthcare_application, create_yafs_topology,
+    PerformanceMetrics, create_placement_json, SimulationVisualizer
+)
 
 def run_healthcare_scenarios():
     """Run OLB evaluation on realistic healthcare scenarios"""
@@ -55,7 +52,7 @@ def run_healthcare_scenarios():
                 # Create YAFS components
                 app = create_smart_healthcare_application(environment)
                 topology = create_yafs_topology(environment)
-                placement_json = create_placement_json('../config')
+                placement_json = create_placement_json('config')
                 placement = alg_class(f"{alg_name}_{scenario_name}", placement_json, environment)
                 
                 # Run simulation
@@ -87,7 +84,11 @@ def run_healthcare_scenarios():
     # Save results
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
-    with open(f"../data/healthcare_scenarios_{timestamp}.json", 'w') as f:
+    os.makedirs("data", exist_ok=True)
+    os.makedirs("reports", exist_ok=True)
+    os.makedirs("plots", exist_ok=True)
+    
+    with open(f"data/healthcare_scenarios_{timestamp}.json", 'w') as f:
         json.dump(all_results, f, indent=2, default=str)
     
     # Generate report
@@ -101,7 +102,7 @@ def run_healthcare_scenarios():
 
 def generate_healthcare_report(results, timestamp):
     """Generate healthcare scenarios comparison report"""
-    with open(f"../reports/healthcare_report_{timestamp}.txt", 'w') as f:
+    with open(f"reports/healthcare_report_{timestamp}.txt", 'w') as f:
         f.write("=== HEALTHCARE SCENARIOS EVALUATION REPORT ===\\n\\n")
         
         # Scenario information
@@ -164,7 +165,7 @@ def create_healthcare_visualizations(results, timestamp):
         if olb_scenario_results:
             viz.plot_performance_comparison(
                 olb_scenario_results, 
-                f"../plots/healthcare_scenarios_comparison_{timestamp}.png"
+                f"plots/healthcare_scenarios_comparison_{timestamp}.png"
             )
     
     print("Healthcare visualizations created!")

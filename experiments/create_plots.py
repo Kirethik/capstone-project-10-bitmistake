@@ -3,11 +3,9 @@ import matplotlib.pyplot as plt
 import sys
 import os
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from src.visualization import SimulationVisualizer
-from src.environment import DigitalTwinEnvironment
-from src.utils import SimulationConfig
+from src import SimulationVisualizer, DigitalTwinEnvironment, SimulationConfig
 
 # Load results
 with open('../data/algorithm_comparison_20250907_184119.json', 'r') as f:

@@ -3,15 +3,13 @@ import os
 import json
 from datetime import datetime
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from src.environment import DigitalTwinEnvironment
-from src.olb_algorithm import OLBPlacement
-from src.comparison_algorithms import RandomPlacement, DistancePlacement, LoadBalancedPlacement
-from src.yafs_integration import create_smart_healthcare_application, create_yafs_topology
-from src.metrics import PerformanceMetrics
-from src.utils import create_placement_json, SimulationConfig
-from src.visualization import SimulationVisualizer
+from src import (
+    DigitalTwinEnvironment, OLBPlacement, RandomPlacement, DistancePlacement,
+    LoadBalancedPlacement, create_smart_healthcare_application, create_yafs_topology,
+    PerformanceMetrics, create_placement_json, SimulationConfig, SimulationVisualizer
+)
 
 def run_algorithm_comparison():
     """Run comprehensive algorithm comparison"""
@@ -40,7 +38,7 @@ def run_algorithm_comparison():
         topology = create_yafs_topology(environment)
         
         # Initialize algorithm
-        placement_json = create_placement_json('../config')
+        placement_json = create_placement_json('config')
         placement = alg_class(f"{alg_name}_Healthcare", placement_json, environment)
         
         try:
@@ -67,11 +65,15 @@ def run_algorithm_comparison():
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
     # Save detailed results
-    with open(f"../data/algorithm_comparison_{timestamp}.json", 'w') as f:
+    os.makedirs("data", exist_ok=True)
+    os.makedirs("reports", exist_ok=True)
+    os.makedirs("plots", exist_ok=True)
+    
+    with open(f"data/algorithm_comparison_{timestamp}.json", 'w') as f:
         json.dump(results, f, indent=2, default=str)
     
     # Generate comparison report
-    with open(f"../reports/comparison_report_{timestamp}.txt", 'w') as f:
+    with open(f"reports/comparison_report_{timestamp}.txt", 'w') as f:
         f.write("=== ALGORITHM COMPARISON REPORT ===\n\n")
         
         for alg_name, metrics in results.items():
@@ -90,11 +92,11 @@ def run_algorithm_comparison():
     # Create visualizations
     visualizer = SimulationVisualizer()
     if results:
-        visualizer.plot_performance_comparison(results, f"../plots/performance_comparison_{timestamp}.png")
+        visualizer.plot_performance_comparison(results, f"plots/performance_comparison_{timestamp}.png")
     
     print(f"Evaluation completed! Results saved with timestamp: {timestamp}")
     return results
 
 if __name__ == "__main__":
-    os.makedirs("../results", exist_ok=True)
+    os.makedirs("results", exist_ok=True)
     run_algorithm_comparison()

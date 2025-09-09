@@ -64,32 +64,216 @@
     ],
     "fog_node_coordinates": [
       [
-        1665.1768787663552,
-        1180.190135835051
+        1498.2122545196262,
+        1052.2661901690717
       ],
       [
-        1023.7952774564747,
-        597.9523233527733
+        728.5543329477696,
+        237.13325269388258
       ],
       [
-        577.8744142528385,
-        749.7064317442125
+        193.44929710340617,
+        449.5890044418976
       ],
       [
-        1467.3312869579959,
-        1318.6854022794932
+        1260.797544349595,
+        1246.1595631912905
       ],
       [
-        509.50331681023255,
-        941.1659492438739
+        111.40398017227903,
+        717.6323289414235
       ],
       [
-        2182.5941221558705,
-        794.8615749407542
+        2119.1129465870445,
+        512.8062049170558
       ]
     ]
   },
-  "performance_metrics": "\n=== YAFS OLB SIMULATION PERFORMANCE REPORT ===\n\nKEY PERFORMANCE INDICATORS (KPIs):\nOverall Latency (L): 5.9117\n  - Communication Latency: 0.2399\n  - Computing Latency: 5.6718\nNetwork Usage (Nusage): 5.0760 MB/s\nExecution Time (Te): 0.5912 ms\nEnergy Consumption (Etotal): 60.4725 W\nCost of Execution (Ce): 2.0544\n\nDETAILED ASSIGNMENT ANALYSIS:\n\nFog Node 4: 2 sensors assigned\n  Sensor 0: Total Latency = 0.7734\n    - Communication Latency: 0.0475\n    - Computing Latency: 0.7259\n    - Sensor Position: (1918.2803953736513, 50.021510445333874)\n    - Fog Node Position: (509.50331681023255, 941.1659492438739)\n  Sensor 5: Total Latency = 0.7730\n    - Communication Latency: 0.0471\n    - Computing Latency: 0.7259\n    - Sensor Position: (2421.384819823141, 1459.4635733876357)\n    - Fog Node Position: (509.50331681023255, 941.1659492438739)\n\nFog Node 3: 3 sensors assigned\n  Sensor 1: Total Latency = 0.8121\n    - Communication Latency: 0.0418\n    - Computing Latency: 0.7704\n    - Sensor Position: (2676.538703114536, 173.8776652588323)\n    - Fog Node Position: (1467.3312869579959, 1318.6854022794932)\n  Sensor 2: Total Latency = 0.8100\n    - Communication Latency: 0.0396\n    - Computing Latency: 0.7704\n    - Sensor Position: (79.60790905159088, 397.675301373297)\n    - Fog Node Position: (1467.3312869579959, 1318.6854022794932)\n  Sensor 9: Total Latency = 0.7956\n    - Communication Latency: 0.0252\n    - Computing Latency: 0.7704\n    - Sensor Position: (1944.1061557397807, 1218.2620113339765)\n    - Fog Node Position: (1467.3312869579959, 1318.6854022794932)\n\nFog Node 0: 2 sensors assigned\n  Sensor 3: Total Latency = 0.6431\n    - Communication Latency: 0.0135\n    - Computing Latency: 0.6296\n    - Sensor Position: (2428.29137003348, 12.997519356122034)\n    - Fog Node Position: (1665.1768787663552, 1180.190135835051)\n  Sensor 8: Total Latency = 0.6379\n    - Communication Latency: 0.0083\n    - Computing Latency: 0.6296\n    - Sensor Position: (1907.0533327932005, 729.6643579401684)\n    - Fog Node Position: (1665.1768787663552, 1180.190135835051)\n\nFog Node 5: 1 sensors assigned\n  Sensor 4: Total Latency = 0.2514\n    - Communication Latency: 0.0011\n    - Computing Latency: 0.2503\n    - Sensor Position: (2871.6392166203436, 673.1890902252535)\n    - Fog Node Position: (2182.5941221558705, 794.8615749407542)\n\nFog Node 1: 1 sensors assigned\n  Sensor 6: Total Latency = 0.1436\n    - Communication Latency: 0.0145\n    - Computing Latency: 0.1291\n    - Sensor Position: (2488.2139927589847, 1237.0395047284921)\n    - Fog Node Position: (1023.7952774564747, 597.9523233527733)\n\nFog Node 2: 1 sensors assigned\n  Sensor 7: Total Latency = 0.2714\n    - Communication Latency: 0.0012\n    - Computing Latency: 0.2702\n    - Sensor Position: (683.6948269546406, 578.7759272042143)\n    - Fog Node Position: (577.8744142528385, 749.7064317442125)\n\n========================================\n",
+  "performance_metrics": {
+    "algorithm": "OLB",
+    "overall_latency": 5.922304036206112,
+    "communication_latency": 0.2505203598622118,
+    "computing_latency": 5.6717836763439005,
+    "network_usage": 5.075971518852187,
+    "execution_time": 0.5922304036206112,
+    "energy_consumption": 60.472464374279454,
+    "cost_of_execution": 2.0554782670488096,
+    "load_balance_score": 0.6428571428571428,
+    "max_utilization": 3,
+    "num_assignments": 10,
+    "detailed_assignments": [
+      {
+        "sensor_id": 0,
+        "fog_node_id": 4,
+        "comm_latency": 0.04797850118646257,
+        "comp_latency": 0.7259347904928596,
+        "total_latency": 0.7739132916793221,
+        "energy": 8.343811228705395,
+        "distance": 1926.2675267947545,
+        "sensor_coordinates": [
+          1918.2803953736513,
+          50.021510445333874
+        ],
+        "fog_node_coordinates": [
+          111.40398017227903,
+          717.6323289414235
+        ]
+      },
+      {
+        "sensor_id": 5,
+        "fog_node_id": 4,
+        "comm_latency": 0.04789151994452399,
+        "comp_latency": 0.7259347904928596,
+        "total_latency": 0.7738263104373836,
+        "energy": 8.080736843969023,
+        "distance": 2426.1749884933515,
+        "sensor_coordinates": [
+          2421.384819823141,
+          1459.4635733876357
+        ],
+        "fog_node_coordinates": [
+          111.40398017227903,
+          717.6323289414235
+        ]
+      },
+      {
+        "sensor_id": 1,
+        "fog_node_id": 3,
+        "comm_latency": 0.042432698887489406,
+        "comp_latency": 0.7703599793932258,
+        "total_latency": 0.8127926782807151,
+        "energy": 6.852123476168695,
+        "distance": 1775.9818403504953,
+        "sensor_coordinates": [
+          2676.538703114536,
+          173.8776652588323
+        ],
+        "fog_node_coordinates": [
+          1260.797544349595,
+          1246.1595631912905
+        ]
+      },
+      {
+        "sensor_id": 2,
+        "fog_node_id": 3,
+        "comm_latency": 0.037635235957728795,
+        "comp_latency": 0.7703599793932258,
+        "total_latency": 0.8079952153509545,
+        "energy": 9.836055061136266,
+        "distance": 1454.3501975412446,
+        "sensor_coordinates": [
+          79.60790905159088,
+          397.675301373297
+        ],
+        "fog_node_coordinates": [
+          1260.797544349595,
+          1246.1595631912905
+        ]
+      },
+      {
+        "sensor_id": 9,
+        "fog_node_id": 3,
+        "comm_latency": 0.03288578832345802,
+        "comp_latency": 0.7703599793932258,
+        "total_latency": 0.8032457677166838,
+        "energy": 3.020542988294037,
+        "distance": 683.8778632179984,
+        "sensor_coordinates": [
+          1944.1061557397807,
+          1218.2620113339765
+        ],
+        "fog_node_coordinates": [
+          1260.797544349595,
+          1246.1595631912905
+        ]
+      },
+      {
+        "sensor_id": 3,
+        "fog_node_id": 0,
+        "comm_latency": 0.013491884605900856,
+        "comp_latency": 0.629611385581122,
+        "total_latency": 0.6431032701870228,
+        "energy": 6.237689814743351,
+        "distance": 1394.6779310107217,
+        "sensor_coordinates": [
+          2428.29137003348,
+          12.997519356122034
+        ],
+        "fog_node_coordinates": [
+          1498.2122545196262,
+          1052.2661901690717
+        ]
+      },
+      {
+        "sensor_id": 8,
+        "fog_node_id": 0,
+        "comm_latency": 0.00849466495352341,
+        "comp_latency": 0.629611385581122,
+        "total_latency": 0.6381060505346453,
+        "energy": 2.7426197383980195,
+        "distance": 520.7907155867358,
+        "sensor_coordinates": [
+          1907.0533327932005,
+          729.6643579401684
+        ],
+        "fog_node_coordinates": [
+          1498.2122545196262,
+          1052.2661901690717
+        ]
+      },
+      {
+        "sensor_id": 4,
+        "fog_node_id": 5,
+        "comm_latency": 0.0013375274625778144,
+        "comp_latency": 0.2503190944642185,
+        "total_latency": 0.25165662192679633,
+        "energy": 3.8221952423567926,
+        "distance": 769.4273565386225,
+        "sensor_coordinates": [
+          2871.6392166203436,
+          673.1890902252535
+        ],
+        "fog_node_coordinates": [
+          2119.1129465870445,
+          512.8062049170558
+        ]
+      },
+      {
+        "sensor_id": 6,
+        "fog_node_id": 1,
+        "comm_latency": 0.015333394625959352,
+        "comp_latency": 0.12913948781926363,
+        "total_latency": 0.14447288244522297,
+        "energy": 10.681053175394474,
+        "distance": 2023.9107270887275,
+        "sensor_coordinates": [
+          2488.2139927589847,
+          1237.0395047284921
+        ],
+        "fog_node_coordinates": [
+          728.5543329477696,
+          237.13325269388258
+        ]
+      },
+      {
+        "sensor_id": 7,
+        "fog_node_id": 2,
+        "comm_latency": 0.003039143914587597,
+        "comp_latency": 0.2701528037327777,
+        "total_latency": 0.2731919476473653,
+        "energy": 0.8556368051134017,
+        "distance": 506.9812033516769,
+        "sensor_coordinates": [
+          683.6948269546406,
+          578.7759272042143
+        ],
+        "fog_node_coordinates": [
+          193.44929710340617,
+          449.5890044418976
+        ]
+      }
+    ]
+  },
   "simulation_metadata": {
     "simulation_time": 1000,
     "framework": "YAFS 1.0",
