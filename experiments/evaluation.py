@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from src import (
     DigitalTwinEnvironment, OLBPlacement, RandomPlacement, DistancePlacement,
-    LoadBalancedPlacement, create_smart_healthcare_application, create_yafs_topology,
+    LoadBalancedPlacement, FNPAPlacement ,create_smart_healthcare_application, create_yafs_topology,
     PerformanceMetrics, create_placement_json, SimulationConfig, SimulationVisualizer
 )
 
@@ -20,7 +20,8 @@ def run_algorithm_comparison():
         'OLB': OLBPlacement,
         'Random': RandomPlacement,
         'Distance': DistancePlacement,
-        'LoadBalanced': LoadBalancedPlacement
+        'LoadBalanced': LoadBalancedPlacement,
+        'FNPA' : FNPAPlacement
     }
     
     results = {}
@@ -32,6 +33,8 @@ def run_algorithm_comparison():
         environment = DigitalTwinEnvironment(config.environment_width, config.environment_height)
         environment.initialize_sensors(config.num_sensors, config.random_seed)
         environment.initialize_fog_nodes(config.num_fog_nodes, config.random_seed)
+        environment.initialize_cloud()
+
         
         # Create application and topology
         app = create_smart_healthcare_application(environment)
