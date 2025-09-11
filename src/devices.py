@@ -39,3 +39,29 @@ class FogNodeDevice:
 
     def __repr__(self):
         return self.__str__()
+    
+class CloudNodeDevice(FogNodeDevice):
+    """
+    Tier 3 - Cloud Layer Entity representing the cloud data center
+    Inherits FogNodeDevice but enforces large compute and bandwidth capacity.
+    Treated as a single centralized node.
+    """
+    def __init__(self, node_id="cloud", coordinates=(0, 0), 
+                 processing_power=1e6, bandwidth=1000,
+                 carrier_frequency=10.0, noise_power=1e-15):
+        super().__init__(
+            node_id=node_id,
+            coordinates=coordinates,
+            processing_power=processing_power,
+            bandwidth=bandwidth,
+            carrier_frequency=carrier_frequency,
+            noise_power=noise_power
+        )
+
+    def __str__(self):
+        return f"CloudNode at {self.coordinates}"
+
+    def __repr__(self):
+        return self.__str__()
+
+
