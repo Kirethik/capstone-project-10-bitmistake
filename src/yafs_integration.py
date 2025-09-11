@@ -86,9 +86,12 @@ def create_yafs_topology(digital_twin):
     topology.G.nodes["proxy"]["RAM"] = 2000
     topology.G.nodes["proxy"]["STORAGE"] = 50000
     
-    topology.G.nodes["cloud"]["IPT"] = 50000
-    topology.G.nodes["cloud"]["RAM"] = 10000
-    topology.G.nodes["cloud"]["STORAGE"] = 100000
+    if digital_twin.cloud_node is not None:
+        cloud = digital_twin.cloud_node
+        topology.G.nodes["cloud"]["IPT"] = int(cloud.processing_power)
+        topology.G.nodes["cloud"]["RAM"] = 10000
+        topology.G.nodes["cloud"]["STORAGE"] = 100000
+
     
     for i in range(len(digital_twin.fog_nodes)):
         topology.G.edges[f"fog_{i}", "proxy"]["BW"] = 100
