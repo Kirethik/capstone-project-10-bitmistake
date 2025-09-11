@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from src import (
     DigitalTwinEnvironment, HealthcareScenarios, OLBPlacement, RandomPlacement,
-    DistancePlacement, create_smart_healthcare_application, create_yafs_topology,
+    DistancePlacement, FNPAPlacement , create_smart_healthcare_application, create_yafs_topology,
     PerformanceMetrics, create_placement_json, SimulationVisualizer
 )
 
@@ -27,7 +27,8 @@ def run_healthcare_scenarios():
     algorithms = {
         'OLB': OLBPlacement,
         'Random': RandomPlacement,
-        'Distance': DistancePlacement
+        'Distance': DistancePlacement,
+        'FNPA': FNPAPlacement 
     }
     
     all_results = {}
@@ -45,6 +46,7 @@ def run_healthcare_scenarios():
             # Create fresh environment
             environment = DigitalTwinEnvironment(3000, 2000)
             num_sensors = scenario_func(environment)
+            environment.initialize_cloud()
             
             print(f"  Sensors: {num_sensors}, Fog Nodes: {len(environment.fog_nodes)}")
             
