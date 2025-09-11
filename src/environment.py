@@ -36,7 +36,7 @@ class DigitalTwinEnvironment:
         """
         if seed is not None:
             random.seed(seed)
-            
+        print(f"[DEBUG] Initializing {num_sensors} sensors in environment of size ({self.width}, {self.height})")
         # Initializing sensors silently
         for i in range(num_sensors):
             coordinates = (random.uniform(0, self.width), random.uniform(0, self.height))
@@ -54,11 +54,13 @@ class DigitalTwinEnvironment:
                 average_flow_size=average_flow_size
             )
             self.add_sensor(sensor)
+        
+            print(f"[INFO] Sensor {i} added at {coordinates}")
 
     def initialize_fog_nodes(self, num_fog_nodes=6, seed=None):
         if seed is not None:
             random.seed(seed + 100)
-            
+        print(f"[DEBUG] Initializing {num_fog_nodes} fog nodes")
         for i in range(num_fog_nodes):
             max_x = min(2500, self.width - 100)
             max_y = min(1500, self.height - 100)
@@ -78,15 +80,22 @@ class DigitalTwinEnvironment:
             )
             self.add_fog_node(fog_node)
 
+            print(f"[INFO] FogNode {i} created at {coordinates} with {processing_power:.2f} MIPS")
+
+
     def initialize_cloud(self):
         """Initialize the cloud node"""
         self.cloud_node = CloudNodeDevice(
             node_id = "cloud",
             coordinates=(self.width/2 , self.height + 500)
         )
+        print("[INFO] Cloud node initialized at coordinates", (self.width/2 , self.height + 500))
 
     def get_summary(self):
         """Get summary of the environment"""
+        print("[SUMMARY] Environment contains "
+              f"{len(self.sensors)} sensors, {len(self.fog_nodes)} fog nodes, "
+              f"Cloud exists: {self.cloud_node is not None}")
         return {
             'environment_size': (self.width, self.height),
             'num_sensors': len(self.sensors),
