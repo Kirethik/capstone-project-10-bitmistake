@@ -140,3 +140,83 @@ class LoadBalancedPlacement(Placement):
             if sensor.device_id == sensor_id:
                 return sensor
         return None
+    
+class FNPAPlacement(Placement):
+    """Fog Node Placement Algorithm for comparison"""
+    def __init__(self,name,json_file,digital_twin,resource_threshold=0.8):
+        super().__init__(name,json_file)
+        self.digital_twin=digital_twin
+        self.module_assignments={}
+        self.activation_dist=None
+        # threshold : max utilization before redirecting to cloud
+        self.resource_threshold=resource_threshold
+        # track resource usage for fog nodes
+        self.node_loads={i:0 for i in range(len(digital_twin.fog_nodes))}
+
+    def initial_allocation(self,sim,app_name):
+            app = sim.apps[app_name]
+            modules_to_place = [m for m in app.modules if "Processing_Module" in m]
+            print(f"FNPA: Placing {len(modules_to_place)} modules with proximity+resources...")
+
+            for module_name in modules_to_place:
+                sensor_id = self._extract_sensor_id(module_name)
+                sensor = self._find_sensor_by_id(sensor_id)
+
+                if not sensor:
+                    continue
+
+                # Step 1 : Try to assign to nearest fog node with resources
+                chosen_node_id = self._choose_fog_node(sensor)
+
+                #Step 2 : If no fog node available , redirect to cloud
+                if chosen_node_id is None:
+                    node_name = self.digital_twin.cloud_node
+                    print(f"FNPA : {module_name} -> cloud (fog resources exhausted)")
+                else:
+                    node_name = f"fog_{chosen_node_id}"
+                    self.node_loads[chosen_node_id] += 1
+                    if chosen_node_id not in self.module_assignments:
+                        self.module_assignments[chosen_node_id] = []
+                    self.module_assignments[chosen_node_id].append(sensor)
+                    print(f"FNPA : {module_name} -> {node_name}")
+
+                sim.deploy_module(app_name, module_name, [], [node_name])
+        
+    def _choose_fog_node(self,sensor):
+            min_distance = float('inf')
+            chosen_node_id = None
+
+            for i , fog_node in enumerate(self.digital_twin.fog_nodes):
+                distance = self._calculate_distance(sensor.coordinates, fog_node.coordinates)
+
+                #check resource availability
+                utilization = self.node_loads[i] / fog_node.processingPower
+                if utilization < self.resource_threshold:
+                    if distance < min_distance:
+                        min_distance = distance
+                        chosen_node_id = i
+
+            return chosen_node_id
+    
+    def _extract_sensor_id(self, module_name):
+        parts = module_name.split("_")
+        for part in reversed(parts):
+            if part.isdigit():
+                return int(part)
+        return 0
+    
+    def _find_sensor_by_id(self, sensor_id):
+        for sensor in self.digital_twin.sensors:
+            if sensor.device_id == sensor_id:
+                return sensor
+        return None
+    
+    def _calculate_distance(self, coord1, coord2):
+        dx = coord1[0] - coord2[0]
+        dy = coord1[1] - coord2[1]
+        return math.sqrt(dx**2 + dy**2)
+        
+
+        
+
+                        
