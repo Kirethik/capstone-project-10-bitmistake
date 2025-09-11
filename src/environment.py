@@ -1,5 +1,5 @@
 import random
-from .devices import SensorDevice, FogNodeDevice
+from .devices import SensorDevice, FogNodeDevice , CloudNodeDevice
 
 
 class DigitalTwinEnvironment:
@@ -78,6 +78,13 @@ class DigitalTwinEnvironment:
             )
             self.add_fog_node(fog_node)
 
+    def initialize_cloud(self):
+        """Initialize the cloud node"""
+        self.cloud_node = CloudNodeDevice(
+            node_id = "cloud",
+            coordinates=(self.width/2 , self.height + 500)
+        )
+
     def get_summary(self):
         """Get summary of the environment"""
         return {
@@ -85,5 +92,11 @@ class DigitalTwinEnvironment:
             'num_sensors': len(self.sensors),
             'num_fog_nodes': len(self.fog_nodes),
             'sensor_positions': [s.coordinates for s in self.sensors],
-            'fog_node_positions': [f.coordinates for f in self.fog_nodes]
+            'fog_node_positions': [f.coordinates for f in self.fog_nodes],
+            'cloud_node': {
+            'exists': self.cloud_node is not None,
+            'coordinates': getattr(self.cloud_node, 'coordinates', None),
+            'processing_power': getattr(self.cloud_node, 'processing_power', None),
+            'bandwidth': getattr(self.cloud_node, 'bandwidth', None)
+             }
         }
