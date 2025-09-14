@@ -7,15 +7,52 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from src import SimulationVisualizer, DigitalTwinEnvironment, SimulationConfig
 
-# Load results
-with open('../data/algorithm_comparison_20250907_184119.json', 'r') as f:
-    results = json.load(f)
+# Load results from all algorithm runs
+results = {}
+import os
+
+def load_latest_file(pattern):
+    files = [f for f in os.listdir('../data') if f.startswith(pattern) and f.endswith('.json')]
+    if not files:
+        print(f"No files found matching pattern: {pattern}")
+        return None
+    latest_file = max(files, key=lambda x: os.path.getmtime(os.path.join('../data', x)))
+    print(f"Loading {latest_file}")
+    return latest_file
+
+# Load OLB results
+olb_file = load_latest_file('olb_simulation_results')
+if olb_file:
+    with open(f'../data/{olb_file}', 'r') as f:
+        olb_results = json.load(f)
+        results['OLB'] = olb_results.get('performance_metrics', {})
+
+# Load comparison algorithm results
+algorithms = ['random', 'distance', 'loadbalanced', 'fnpa']
+for algo in algorithms:
+    result_file = load_latest_file(f'{algo}placement_results')
+    if result_file:
+        with open(f'../data/{result_file}', 'r') as f:
+            algo_results = json.load(f)
+            results[algo.upper() + 'Placement'] = algo_results.get('performance_metrics', {})
 
 # Create visualizer
 viz = SimulationVisualizer()
 
 # Create performance comparison plot
-viz.plot_performance_comparison(results, "../plots/algorithm_comparison_chart.png")
+from datetime import datetime
+timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+
+# Print the results for debugging
+print("\nResults for visualization:")
+for algo, metrics in results.items():
+    print(f"\n{algo}:")
+    print(metrics)
+
+# Create the plot
+output_path = f"../plots/performance_comparison_{timestamp}.png"
+viz.plot_performance_comparison(results, output_path)
+print(f"\nPlot saved to: {output_path}")
 
 # Create environment plot for OLB
 config = SimulationConfig()
