@@ -1,3 +1,32 @@
+class ActuatorDevice:
+    """
+    Tier 1 - IoT Layer Entity representing an actuator device
+    Actuators receive processed data or commands from Fog/Cloud nodes
+    Examples: insulin pump, alarm, display unit
+    """
+    def __init__(self, actuator_id, coordinates, action_type, power_consumption):
+        self.actuator_id = actuator_id
+        self.coordinates = coordinates  # (x, y) tuple
+        self.actionType = action_type   # e.g., "insulin_delivery", "alert", "display"
+        self.powerConsumption = power_consumption  # in Watts
+        self.received_commands = []  # track commands received
+
+        print(f"[INFO] Actuator {actuator_id} ({action_type}) created at {coordinates} "
+              f"with Power {power_consumption}W")
+
+    def receive_command(self, command):
+        """Receive a command from fog/cloud node"""
+        self.received_commands.append(command)
+        print(f"[ACTION] Actuator {self.actuator_id} executed command: {command}")
+
+    def __str__(self):
+        return f"Actuator_{self.actuator_id} ({self.actionType}) at {self.coordinates}"
+
+    def __repr__(self):
+        return self.__str__()
+
+
+
 class SensorDevice:
     """
     Tier 1 - IoT Layer Entity representing a patient sensor
