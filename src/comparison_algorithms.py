@@ -143,7 +143,7 @@ class LoadBalancedPlacement(Placement):
     
 class FNPAPlacement(Placement):
     """Fog Node Placement Algorithm for comparison"""
-    def __init__(self,name,json_file,digital_twin,resource_threshold=0.8):
+    def __init__(self,name,json_file,digital_twin,resource_threshold=0.3):  # Lowered from 0.8 to 0.3 to trigger load balancing sooner
         super().__init__(name,json_file)
         self.digital_twin=digital_twin
         self.module_assignments={}

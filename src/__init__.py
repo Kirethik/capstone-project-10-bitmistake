@@ -6,7 +6,7 @@ from .metrics import PerformanceMetrics
 from .utils import SimulationConfig, create_placement_json, save_results
 from .visualization import SimulationVisualizer
 from .healthcare_scenarios import HealthcareScenarios
-from .comparison_algorithms import RandomPlacement, DistancePlacement, LoadBalancedPlacement
+from .comparison_algorithms import RandomPlacement, DistancePlacement, LoadBalancedPlacement, FNPAPlacement
 from .metrics_definitions import MetricsDefinitions
 
 __all__ = [
@@ -15,5 +15,5 @@ __all__ = [
     'create_yafs_topology', 'PerformanceMetrics', 'SimulationConfig',
     'create_placement_json', 'save_results', 'SimulationVisualizer',
     'HealthcareScenarios', 'RandomPlacement', 'DistancePlacement',
-    'LoadBalancedPlacement', 'MetricsDefinitions'
+    'LoadBalancedPlacement', 'FNPAPlacement', 'MetricsDefinitions'
 ]

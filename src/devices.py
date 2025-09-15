@@ -11,6 +11,8 @@ class SensorDevice:
         self.averageFlowRate = average_flow_rate  # fl(x) in Hz
         self.flowTrafficSize = flow_traffic_size  # l(x) in megabits
         self.averageFlowSize = average_flow_size  # ν(x) in MI
+        print(f"[INFO] SensorDevice {device_id} created at {coordinates} with Tx Power {transmission_power}W")
+
 
     def __str__(self):
         return f"Sensor_{self.device_id} at {self.coordinates}"
@@ -33,6 +35,9 @@ class FogNodeDevice:
         self.carrierFrequency = carrier_frequency  # in GHz
         self.noisePower = noise_power  # σ^2 in Watts
         self.assigned_modules = []  # Track assigned processing modules
+        print(f"[INFO] FogNode {node_id} created at {coordinates} with {processing_power} MIPS and BW {bandwidth} MHz")
+
+# Note: Each fog node will store assigned modules in self.assigned_modules
 
     def __str__(self):
         return f"FogNode_{self.node_id} at {self.coordinates}"
@@ -57,6 +62,8 @@ class CloudNodeDevice(FogNodeDevice):
             carrier_frequency=carrier_frequency,
             noise_power=noise_power
         )
+        print(f"[INFO] CloudNode initialized at {coordinates} with {processing_power} MIPS and BW {bandwidth} MHz")
+
 
     def __str__(self):
         return f"CloudNode at {self.coordinates}"

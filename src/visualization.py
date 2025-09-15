@@ -44,16 +44,30 @@ class SimulationVisualizer:
     
     def plot_performance_comparison(self, results_dict, save_path="performance_comparison.png"):
         """Compare performance metrics across algorithms"""
+        # Define clean labels mapping
+        label_mapping = {
+            'OLB': 'OLB',
+            'RANDOMPlacement': 'Random',
+            'DISTANCEPlacement': 'Distance',
+            'LOADBALANCEDPlacement': 'LoadBalanced',
+            'FNPAPlacement': 'FNPA'
+        }
+        
         algorithms = list(results_dict.keys())
+        clean_labels = [label_mapping.get(algo, algo) for algo in algorithms]
         metrics = ['overall_latency', 'energy_consumption', 'load_balance_score']
         metric_labels = ['Overall Latency (ms)', 'Energy Consumption (W)', 'Load Balance Score']
+        
+        # Print debugging information
+        print("\nPlotting metrics for algorithms:", clean_labels)
+        print("Looking for metrics:", metrics)
         
         fig, axes = plt.subplots(1, 3, figsize=(15, 5))
         colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
         
         for i, (metric, label) in enumerate(zip(metrics, metric_labels)):
             values = [results_dict[alg][metric] for alg in algorithms]
-            bars = axes[i].bar(algorithms, values, color=colors[:len(algorithms)])
+            bars = axes[i].bar(clean_labels, values, color=colors[:len(algorithms)])
             axes[i].set_title(label)
             axes[i].set_ylabel('Value')
             axes[i].tick_params(axis='x', rotation=45)

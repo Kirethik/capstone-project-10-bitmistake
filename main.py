@@ -1,3 +1,4 @@
+from src.comparison_algorithms import RandomPlacement, DistancePlacement, LoadBalancedPlacement, FNPAPlacement
 import os
 import sys
 import json
@@ -11,6 +12,12 @@ from src import (
     create_yafs_topology, PerformanceMetrics, create_placement_json,
     save_results, SimulationConfig
 )
+algorithms = [
+    ("RandomPlacement", RandomPlacement),
+    ("DistancePlacement", DistancePlacement),
+    ("LoadBalancedPlacement", LoadBalancedPlacement),
+    ("FNPAPlacement", FNPAPlacement)
+]
 
 # Configure logging
 logging.basicConfig(
@@ -96,7 +103,8 @@ def main():
         logger.info("Simulation completed successfully!")
         logger.info(f"Results saved to: {results_filename}")
         
-        return results
+        return s, app.name, placement_json, environment, results
+
         
     except ImportError as e:
         logger.error(f"YAFS framework not properly installed: {e}")
@@ -108,6 +116,51 @@ def main():
         logger.exception("Full traceback:")
         sys.exit(1)
 
+def run_experiments(placement_json, config):
+    from yafs.core import Sim
+    from yafs.population import Population
+    import json
+
+    for algo_name, AlgoClass in algorithms:
+        print(f"\n==== Running {algo_name} ====\n")
+
+        # Fresh environment for each run
+        environment = DigitalTwinEnvironment(
+            width=config.environment_width,
+            height=config.environment_height
+        )
+        environment.initialize_sensors(num_sensors=config.num_sensors, seed=config.random_seed)
+        environment.initialize_fog_nodes(num_fog_nodes=config.num_fog_nodes, seed=config.random_seed)
+
+        app = create_smart_healthcare_application(environment)
+        topology = create_yafs_topology(environment)
+        sim = Sim(topology, default_results_path="results/")
+        population = Population(name="HealthcareSensors")
+
+        placement = AlgoClass(algo_name, placement_json, environment)
+        sim.deploy_app(app, placement, population)
+        sim.run(until=config.simulation_time)
+
+        metrics = PerformanceMetrics()
+        metrics.collect_metrics(environment, placement, algo_name)
+
+        results = {
+            'simulation_config': config.to_dict(),
+            'performance_metrics': metrics.get_summary_dict(),
+            'simulation_metadata': {
+                'algorithm': algo_name,
+                'framework': 'YAFS 1.0',
+                'simulation_time': config.simulation_time
+            }
+        }
+
+        results_filename = f"data/{algo_name.lower()}_results.json"
+        with open(results_filename, 'w') as f:
+            json.dump(results, f, indent=2, default=str)
+
+        save_results(metrics, placement, f"reports/{algo_name.lower()}_report.txt")
+
+        print(f"==== Finished {algo_name}, results saved to {results_filename} ====\n")
 
 if __name__ == "__main__":
     # Create directories if they don't exist
@@ -117,4 +170,12 @@ if __name__ == "__main__":
     os.makedirs("logs", exist_ok=True)
     
     # Run main simulation
-    main()
+     # Run main simulation (OLB)
+    sim, app_name, placement_json, environment, results = main()
+    
+    # Step 4: Run all comparison algorithms
+    config = SimulationConfig()
+
+    run_experiments(placement_json, config)
+
+    
