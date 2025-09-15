@@ -1,12 +1,16 @@
+"""Comprehensive metrics definitions for OLB evaluation
 """
-Comprehensive metrics definitions for OLB evaluation
-"""
+
+
+
 
 class MetricsDefinitions:
     """
     Standardized metrics definitions for fair algorithm comparison
     """
-    
+
+
+
     @staticmethod
     def get_metrics_documentation():
         return {
@@ -16,16 +20,19 @@ class MetricsDefinitions:
                 "computing_latency": "Processing delays based on fog node CPU utilization (ms)",
                 "average_latency": "Mean latency per sensor assignment (ms)"
             },
+
             "energy_metrics": {
                 "total_energy": "Sum of transmission and processing energy consumption (W)",
                 "transmission_energy": "Energy used for wireless communication (W)",
                 "processing_energy": "Energy used for computation at fog nodes (W)"
             },
+
             "cost_metrics": {
                 "execution_cost": "Weighted combination of latency, energy, and network usage",
                 "network_usage": "Total data transmission volume (MB/s)",
                 "resource_utilization": "Average fog node CPU/memory utilization (%)"
             },
+
             "load_balance_metrics": {
                 "load_variance": "Variance in fog node utilization levels",
                 "max_utilization": "Highest fog node utilization percentage",
@@ -43,7 +50,11 @@ class MetricsDefinitions:
         # Processing energy: P_cpu * t_proc  
         processing_time = sensor.averageFlowSize / fog_node.processingPower * 1e-3  # Convert MI to seconds
         processing_energy = fog_node.processingPower * 1e-6 * processing_time  # Assume 1W per 1000 MIPS
+
+        print(f"[DEBUG] EnergyCalc -> Sensor {sensor.device_id} | Fog {fog_node.node_id} | "
+              f"TxEnergy={transmission_energy:.4f}, ProcEnergy={processing_energy:.4f}")
         
+
         return transmission_energy + processing_energy
     
     @staticmethod
@@ -52,12 +63,16 @@ class MetricsDefinitions:
         if not assignments:
             return 0
         
+
         loads = [len(sensors) for sensors in assignments.values()]
         if len(loads) <= 1:
             return 1.0
             
         mean_load = sum(loads) / len(loads)
         variance = sum((load - mean_load)**2 for load in loads) / len(loads)
+
+        print(f"[DEBUG] LoadBalance -> mean={mean_load:.2f}, variance={variance:.2f}")
+        
         
         # Lower variance = better balance (normalize to 0-1 scale)
         return 1.0 / (1.0 + variance)

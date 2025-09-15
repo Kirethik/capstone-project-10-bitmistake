@@ -18,8 +18,16 @@ class PerformanceMetrics:
         self.load_balance_score = 0
         self.max_utilization = 0
         self.algorithm_name = "Unknown"
+
+        print("[DEBUG] MetricsCollector initialized")
         
     def collect_metrics(self, digital_twin, placement, algorithm_name="Unknown"):
+
+        """
+        Collectes metrics for a given placement in the OLB algorithm
+        """
+
+        print("f[INFO] Collecting metrics for algorithm : {algorithm_name}")
         self.algorithm_name = algorithm_name
         calculator = OLBLatencyCalculator()
         
@@ -40,6 +48,9 @@ class PerformanceMetrics:
                 other_sensors = [s for s in assigned_sensors if s != sensor]
                 comm_lat = calculator.calculate_communication_latency(sensor, fog_node, other_sensors)
                 comp_lat = calculator.calculate_computing_latency(sensor, fog_node, other_sensors)
+
+                print(f"[TRACE] Sensor {sensor.device_id} -> Fog {fog_node.node_id}, "f"CommLat={comm_lat:.4f}, CompLat={comp_lat:.4f}, Energy={energy:.4f}")  
+
                 
                 if comm_lat == float('inf') or comp_lat == float('inf'):
                     comm_lat = 1000
@@ -83,6 +94,7 @@ class PerformanceMetrics:
     def generate_report(self):
         """Generate comprehensive performance report"""
         report = f"""
+        print("[INFO] Generating performance report...")
 === YAFS OLB SIMULATION PERFORMANCE REPORT ===
 
 KEY PERFORMANCE INDICATORS (KPIs):
