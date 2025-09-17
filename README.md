@@ -1,91 +1,152 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/WzUeh8r0)
+# Optimised Load Balancing (OLB) Simulation for Smart Healthcare IoT
 
-# OLB Simulation - YAFS Framework
+![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Framework](https://img.shields.io/badge/framework-YAFS-orange.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-A modularized implementation of Optimised Load Balancing (OLB) algorithm for IoT-enabled smart healthcare systems using the YAFS (Yet Another Fog Simulator) framework.
+A modularized, high-fidelity simulation of the **Optimised Load Balancing (OLB)** algorithm for IoT-enabled smart healthcare systems, built on the **YAFS (Yet Another Fog Simulator)** framework.
+
+This project provides a complete digital twin to model, simulate, and analyze the performance of load balancing strategies in a fog computing environment.
+
+---
+
+## Table of Contents
+
+- [About The Project](#about-the-project)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Core Concepts: The OLB Algorithm](#core-concepts-the-olb-algorithm)
+  - [Communication Latency Analysis](#communication-latency-analysis-l_mj)
+  - [Computing Latency Analysis](#computing-latency-analysis-l_pj)
+- [Simulation Output](#simulation-output)
+- [License](#license)
+
+---
+
+## About The Project
+
+This simulation implements the mathematical model of the OLB algorithm within a custom YAFS placement policy. It constructs a digital twin of a smart healthcare environment, complete with patient sensors (Tier 1) and fog computing nodes (Tier 2), to evaluate how well the OLB algorithm distributes computational workloads.
+
+**Key Features:**
+- **YAFS Integration**: Seamlessly integrated with the YAFS 1.0 simulation framework.
+- **Digital Twin Environment**: Simulates a realistic IoT healthcare environment with geospatial awareness.
+- **OLB Algorithm**: Implements the complete mathematical model for optimised load balancing.
+- **Performance Metrics**: Provides comprehensive analysis of latency, energy consumption, and network usage.
+- **Modular Design**: Clean, maintainable, and extensible code structure.
+
+**Built With:**
+*   [Python 3.8+](https://www.python.org/)
+*   [YAFS (Yet Another Fog Simulator)](https://yafs.readthedocs.io/)
+*   [NetworkX](https://networkx.org/)
+*   [NumPy](https://numpy.org/)
+*   [Matplotlib](https://matplotlib.org/)
+
+---
+
+## Getting Started
+
+Follow these steps to get the simulation running on your local machine.
+
+### Prerequisites
+
+Ensure you have Python 3.8 or higher installed. You can check your version with:
+```sh
+python --version
+```
+### Installation
+
+1.  **Clone the repository:**
+    ```sh
+    git clone https://github.com/23CSE362-edge-computing-2025-26-odd/capstone-project-10-bitmistake.git
+    cd capstone-project-10-bitmistake
+    ```
+2.  **Install the YAFS framework:**
+    ```sh
+    pip install yafs
+    ```
+3.  **Install additional dependencies:**
+    ```sh
+    pip install networkx numpy matplotlib
+    ```
+---
+
+## Usage
+
+To run the complete simulation, execute the main script from the root directory:
+```sh
+python main.py
+```
+The script will:
+1.  Initialize the digital twin environment.
+2.  Set up the YAFS topology and application.
+3.  Apply the OLB placement algorithm to assign sensor workloads to fog nodes.
+4.  Run the simulation for the configured duration.
+5.  Generate and save performance reports in the `results/` and `data/` directories.
+
+**Configuration:**
+You can modify simulation parameters (e.g., number of sensors, simulation time) in the `src/utils.py` file within the `SimulationConfig` class.
+
+---
 
 ## Project Structure
 
 ```
-l:\OLB\
-├── main.py                 # Main entry point
-├── src/                    # Source code modules
-│   ├── __init__.py         # Package initialization
-│   ├── devices.py          # Device models (sensors, fog nodes)
-│   ├── environment.py      # Digital twin environment
-│   ├── olb_algorithm.py    # OLB placement algorithm
-│   ├── yafs_integration.py # YAFS framework integration
-│   ├── metrics.py          # Performance metrics
-│   └── utils.py            # Utilities and configuration
-├── results/                # Simulation results (created at runtime)
+.
+├── main.py                 # Main simulation entry point
+├── config/                 # Configuration files for experiments and placement
+├── data/                   # Raw simulation results (JSON)
+├── docs/                   # Project documentation
+├── experiments/            # Scripts for evaluation and plotting
+├── plots/                  # Generated plots and visualizations
+├── reports/                # Formatted simulation reports
+├── src/                    # Source code
+│   ├── __init__.py         # Package initializer
+│   ├── comparison_algorithms.py # Additional load balancing algorithms
+│   ├── devices.py          # Sensor and Fog Node models
+│   ├── environment.py      # Digital Twin Environment setup
+│   ├── healthcare_scenarios.py # Healthcare-specific simulation scenarios
+│   ├── metrics.py          # Performance metrics collection
+│   ├── metrics_definitions.py # Definitions for custom metrics
+│   ├── olb_algorithm.py    # Core OLB algorithm implementation
+│   ├── utils.py            # Configuration and utility functions
+│   ├── visualization.py    # Plotting and visualization functions
+│   ├── workload_models.py  # Workload generation models
+│   └── yafs_integration.py # YAFS-specific integration code
 └── README.md               # This file
 ```
 
-## Features
+---
 
-- **YAFS Integration**: Complete integration with YAFS 1.0 framework
-- **OLB Algorithm**: Mathematical model for optimised load balancing
-- **Digital Twin Environment**: Simulated IoT healthcare environment
-- **Performance Metrics**: Comprehensive latency and energy analysis
-- **Modular Design**: Clean separation of concerns for maintainability
+## Core Concepts: The OLB Algorithm
 
-## Requirements
+The OLB algorithm dynamically assigns sensor workloads to the most optimal fog node by calculating a total latency score. The node with the minimum score is selected.
 
-- Python 3.8+
-- YAFS framework
-- NetworkX
-- NumPy
-- Matplotlib (for visualization)
+### Communication Latency Analysis (L_m(j))
 
-## Installation
+This measures the time it takes to transmit data from a sensor to a fog node. It is calculated based on:
+1.  **Distance**: Euclidean distance between the sensor and the fog node.
+2.  **Channel Gain & SNR**: Signal strength and quality over the wireless channel.
+3.  **Device Capacity**: The maximum data rate the fog node can handle from the sensor.
+4.  **Total Traffic Load**: The cumulative traffic from all sensors assigned to the node.
 
-1. Install YAFS framework:
-```bash
-pip install yafs
-```
+### Computing Latency Analysis (L_p(j))
 
-2. Install additional dependencies:
-```bash
-pip install networkx numpy matplotlib
-```
+This measures the time it takes for a fog node to process the received data. It is calculated based on:
+1.  **Individual Computing Load**: The computational demand of a single sensor's workload.
+2.  **Total Computing Load**: The cumulative computational demand from all sensors assigned to the node.
 
-## Usage
+The final placement decision is made by selecting the fog node `j` that minimizes `Total Latency = L_m(j) + L_p(j)`.
 
-Run the complete simulation:
-```bash
-python main.py
-```
-
-The simulation will:
-1. Create a digital twin environment with sensors and fog nodes
-2. Initialize YAFS topology and application
-3. Apply OLB placement algorithm
-4. Run the simulation
-5. Generate performance metrics and reports
-6. Save results to the `results/` directory
-
-## Configuration
-
-The simulation can be configured by modifying the `SimulationConfig` class in `src/utils.py` or by providing configuration parameters to the main script.
-
-Default configuration:
-- Number of sensors: 20
-- Number of fog nodes: 5
-- Grid size: 100x100 units
-- Simulation time: 1000 time units
-
-## Output
-
-The simulation generates:
-- Log files with detailed execution information
-- JSON results files with performance metrics
-- Performance reports with latency and energy analysis
+---
 
 ## Mathematical Model
 
 The OLB algorithm implements:
 - Communication latency calculation
-- Computing latency estimation  
+- Computing latency estimation
 - Energy consumption modeling
 - Load balancing optimization
 
@@ -180,29 +241,17 @@ The YAFS simulation successfully assigned 10 sensors across 6 fog nodes:
 - **Latency Optimization**: Total latency 4.1962 with Communication (0.1045) + Computing (4.0917)
 - **Real-time Decision Making**: Each sensor evaluated against all fog nodes with dynamic load consideration
 
-## Files Generated
-1. `yafs_olb_simulation.py` - Complete YAFS-based OLB implementation
-2. `yafs_olb_results.txt` - Detailed YAFS performance report
-3. `placement_config.json` - YAFS placement configuration file
-4. `README.md` - Complete implementation documentation
+---
 
-## Verification
-- ✅ All required mathematical formulas implemented within YAFS
-- ✅ Complete digital twin with all specified parameters
-- ✅ OLB algorithm correctly integrated with YAFS placement policy
-- ✅ YAFS simulation successfully executes and deploys modules
-- ✅ Performance metrics accurately calculated from YAFS execution
-- ✅ Real-time load balancing with dynamic assignment decisions
+## Simulation Output
 
-## Technology Stack
-- **Python 3.8.20** with conda environment
-- **YAFS 1.0** - Yet Another Fog Simulator
-- **Core Libraries**: numpy, matplotlib, pandas, networkx
-- **Simulation Framework**: Complete YAFS integration with custom placement policy
+The simulation generates several output files:
+- **`data/olb_simulation_results.json`**: A JSON file containing raw metrics and configuration details.
+- **`results/reports/olb_simulation_report.txt`**: A human-readable report summarizing the performance and module assignments.
+- **`results/plots/`**: Visualizations comparing algorithm performance (if generated via experiment scripts).
 
-## Usage
-```bash
-conda run --live-stream --name edge python yafs_olb_simulation.py
-```
+---
 
-This implementation provides a complete, functional YAFS-based simulation of the OLB algorithm with full mathematical model implementation, proper fog computing simulation, and comprehensive performance analysis integrated within the YAFS framework.
+## License
+
+Distributed under the MIT License.

@@ -11,3 +11,5 @@ __pycache__/
 
 config.ini
 .env
+
+.mypy_cache/
